@@ -1,0 +1,9 @@
+{
+  "name": "fiesta-fotos",
+  "version": "1.0.0",
+  "description": "Servidor para que los invitados suban fotos y vídeos y se guarden en un repositorio de GitHub",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "express": "^4.19.2", "multer": "^1.4.5-lts.1" }
+}
