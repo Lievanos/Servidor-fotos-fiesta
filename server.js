@@ -49,6 +49,7 @@ async function ensure(s) {
   if (!r.ok) throw new Error('GitHub ' + r.status); // no sobrescribimos datos si no pudimos leerlos
   const j = await r.json();
   s.sha = j.sha; s.data = JSON.parse(Buffer.from(j.content, 'base64').toString('utf8'));
+  if (s === stores.likes) for (const n of Object.keys(s.data)) if (Array.isArray(s.data[n])) s.data[n] = { heart: s.data[n] }; // formato anterior: solo me gusta
 }
 async function saveNow(s, tries = 2) {
   const body = { message: `datos ${s.file}`, content: Buffer.from(JSON.stringify(s.data)).toString('base64'), branch: GITHUB_BRANCH };
@@ -100,25 +101,31 @@ app.get('/api/list', async (req, res) => {
   try { res.json(await getNames()); } catch (e) { console.error(e.message); res.status(502).json({ error: 'github' }); }
 });
 
-// ---- Me gusta
-app.get('/api/likes', async (req, res) => {
+// ---- Reacciones (❤️ 😂 🔥 👏)
+const REACTS = ['heart', 'laugh', 'fire', 'clap'];
+app.get('/api/reactions', async (req, res) => {
   try {
     await ensure(stores.likes);
-    const v = String(req.query.v || ''), counts = {}, mine = [];
-    for (const [n, arr] of Object.entries(stores.likes.data)) { counts[n] = arr.length; if (arr.includes(v)) mine.push(n); }
+    const v = String(req.query.v || ''), counts = {}, mine = {};
+    for (const [n, o] of Object.entries(stores.likes.data)) {
+      counts[n] = {};
+      for (const k of REACTS) { const a = o[k] || []; if (a.length) counts[n][k] = a.length; if (a.includes(v)) (mine[n] || (mine[n] = [])).push(k); }
+    }
     res.json({ counts, mine });
   } catch (e) { console.error(e.message); res.status(502).json({ error: 'github' }); }
 });
-app.post('/api/like', needCode, express.json({ limit: '2kb' }), async (req, res) => {
-  const { name, voter } = req.body || {};
-  if (!NAME_RE.test(name) || !/^[A-Za-z0-9-]{8,40}$/.test(voter || '')) return res.sendStatus(400);
+app.post('/api/react', needCode, express.json({ limit: '2kb' }), async (req, res) => {
+  const { name, voter, kind } = req.body || {};
+  if (!NAME_RE.test(name) || !REACTS.includes(kind) || !/^[A-Za-z0-9-]{8,40}$/.test(voter || '')) return res.sendStatus(400);
   try {
     const s = stores.likes; await ensure(s);
     if (!(await getNames()).includes(name)) return res.sendStatus(404);
-    const arr = s.data[name] || (s.data[name] = []), i = arr.indexOf(voter);
+    const o = s.data[name] || (s.data[name] = {}), arr = o[kind] || (o[kind] = []), i = arr.indexOf(voter);
     if (i >= 0) arr.splice(i, 1); else arr.push(voter);
-    const count = arr.length; if (!count) delete s.data[name];
-    touch(s); res.json({ liked: i < 0, count });
+    const count = arr.length;
+    if (!count) delete o[kind];
+    if (!Object.keys(o).length) delete s.data[name];
+    touch(s); res.json({ on: i < 0, count });
   } catch (e) { console.error(e.message); res.status(502).json({ error: 'github' }); }
 });
 
