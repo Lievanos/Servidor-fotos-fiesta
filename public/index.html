@@ -66,9 +66,10 @@ input[type=file]{position:absolute;opacity:0;width:1px;height:1px}
 .it img,.it video{width:100%;height:100%;object-fit:cover;display:block}
 .it span{position:absolute;left:8px;bottom:8px;max-width:calc(100% - 78px);padding:3px 10px;border-radius:12px;font-size:.78rem;font-weight:700;background:rgba(27,20,80,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .it em{position:absolute;top:8px;left:8px;font-style:normal;background:linear-gradient(135deg,#6366f1,#38bdf8);border-radius:12px;padding:2px 9px;font-size:.78rem}
-.lk{border:1px solid var(--edge);background:rgba(27,20,80,.72);border-radius:14px;padding:5px 10px;font-weight:700;font-size:.85rem;min-height:34px}
-.lk.on{background:linear-gradient(135deg,#ff3d81,#ff8a3d);border-color:transparent}
-.it .lk{position:absolute;right:8px;bottom:8px}
+.pill{position:absolute;right:8px;bottom:8px;padding:3px 9px;border-radius:12px;font-size:.8rem;font-weight:700;background:rgba(27,20,80,.72)}
+.rxs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.rx{border:1px solid var(--edge);background:rgba(255,255,255,.12);border-radius:16px;padding:6px 12px;font-weight:700;font-size:1rem;min-height:40px}
+.rx.on{background:linear-gradient(135deg,#8b5cf6,#ec4899);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:22px 0}
 .rt{display:flex;align-items:center;gap:12px;padding:14px 14px 14px 16px}
 .rt .tx{flex:1;font-weight:700;line-height:1.25}
@@ -85,11 +86,17 @@ input[type=file]{position:absolute;opacity:0;width:1px;height:1px}
 #lb{position:fixed;inset:0;background:rgba(14,10,50,.95);display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;z-index:5}
 #lb img,#lb video{max-width:100%;max-height:72%;border-radius:16px}
 #lb p{margin:12px 0 10px;color:var(--mut)}
+#lbc{max-width:100%}
+@keyframes inL{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes inR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+.inL{animation:inL .22s}.inR{animation:inR .22s}
+.nav{position:absolute;top:50%;margin-top:-24px;width:44px;height:48px;border-radius:14px;border:1px solid var(--edge);background:var(--glass);font-size:1.6rem;line-height:1;z-index:1}
+#pv{left:8px}#nx{right:8px}
 .lbar{display:flex;gap:10px;align-items:center}
 #dl{display:inline-flex;align-items:center;min-height:34px;padding:5px 14px;border-radius:14px;font-weight:700;font-size:.9rem;color:#fff;text-decoration:none;background:linear-gradient(135deg,#6366f1,#38bdf8)}
 #x{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;width:44px;height:44px;border-radius:50%;border:1px solid var(--edge);background:var(--glass);font-size:1.2rem}
 @media (min-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.inL,.inR{animation:none}}
 </style>
 </head>
 <body>
@@ -139,8 +146,8 @@ input[type=file]{position:absolute;opacity:0;width:1px;height:1px}
 </section>
 </main>
 
-<div id="lb"><button id="x" aria-label="Cerrar">✕</button><div id="lbc"></div><p id="lbp"></p>
-<div class="lbar"><button class="lk" id="lbl">♡ 0</button><a id="dl" download>⬇ Descargar</a></div></div>
+<div id="lb"><button id="x" aria-label="Cerrar">✕</button><button class="nav" id="pv" aria-label="Anterior">‹</button><button class="nav" id="nx" aria-label="Siguiente">›</button>
+<div id="lbc"></div><p id="lbp"></p><div class="rxs" id="rxs"></div><div class="lbar" style="margin-top:12px"><a id="dl" download>⬇ Descargar</a></div></div>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -202,20 +209,26 @@ function ring(p,v){
   $('rv').setAttribute('stroke-dasharray',b+' '+(C-b));$('rv').setAttribute('stroke-dashoffset',-(a+gap));
 }
 
-// ---- Me gusta
-let likes={},mine=new Set(),btns={},cur='';
-const paint=n=>{const t=(mine.has(n)?'♥ ':'♡ ')+(likes[n]||0);
-  (btns[n]||[]).concat(cur===n?[$('lbl')]:[]).forEach(b=>{b.textContent=t;b.classList.toggle('on',mine.has(n))})};
-async function loadLikes(){try{
-  const j=await (await fetch('/api/likes?v='+vid)).json();if(!j.counts)return;
-  likes=j.counts;mine=new Set(j.mine);Object.keys(btns).forEach(paint);if(cur)paint(cur)}catch(e){}}
-async function toggle(n){
-  const was=mine.has(n);was?mine.delete(n):mine.add(n);likes[n]=Math.max(0,(likes[n]||0)+(was?-1:1));paint(n);
+// ---- Reacciones
+const E={heart:'❤️',laugh:'😂',fire:'🔥',clap:'👏'},K=Object.keys(E);
+let rx={},mine={},btns={},cur='';
+function paint(n){
+  const p=btns[n];
+  if(p){const o=rx[n]||{},tot=K.reduce((a,k)=>a+(o[k]||0),0);p.hidden=!tot;p.textContent=K.filter(k=>o[k]).slice(0,3).map(k=>E[k]).join('')+' '+tot}
+  if(n===cur)paintLb();
+}
+async function loadReacts(){try{
+  const j=await (await fetch('/api/reactions?v='+vid)).json();if(!j.counts)return;
+  rx=j.counts;mine=j.mine;Object.keys(btns).forEach(paint);paintLb()}catch(e){}}
+async function toggle(n,k){
+  const arr=mine[n]||(mine[n]=[]),o=rx[n]||(rx[n]={}),was=arr.includes(k);
+  const set=on=>{const i=arr.indexOf(k);if(on&&i<0)arr.push(k);if(!on&&i>=0)arr.splice(i,1)};
+  set(!was);o[k]=Math.max(0,(o[k]||0)+(was?-1:1));paint(n);
   try{
-    const r=await fetch('/api/like',{method:'POST',headers:{'Content-Type':'application/json',...(code?{'x-code':code}:{})},body:JSON.stringify({name:n,voter:vid})});
-    if(!r.ok)throw r.status;const j=await r.json();likes[n]=j.count;j.liked?mine.add(n):mine.delete(n);paint(n);
-  }catch(s){was?mine.add(n):mine.delete(n);likes[n]=Math.max(0,(likes[n]||0)+(was?1:-1));paint(n);
-    st(s===401?'Este enlace no tiene el código. Escanea de nuevo el QR.':'No se pudo guardar tu me gusta.')}
+    const r=await fetch('/api/react',{method:'POST',headers:{'Content-Type':'application/json',...(code?{'x-code':code}:{})},body:JSON.stringify({name:n,voter:vid,kind:k})});
+    if(!r.ok)throw r.status;const j=await r.json();o[k]=j.count;set(j.on);paint(n);
+  }catch(s){set(was);o[k]=Math.max(0,(o[k]||0)+(was?1:-1));paint(n);
+    st(s===401?'Este enlace no tiene el código. Escanea de nuevo el QR.':'No se pudo guardar tu reacción.')}
 }
 
 // ---- Álbum y retos
@@ -232,8 +245,7 @@ async function load(){
       const m=document.createElement(isVid(n)?'video':'img');m.src='/media/'+n;
       if(isVid(n)){m.muted=true;m.preload='metadata';m.playsInline=true}else{m.loading='lazy';m.alt='Foto de '+by(n)}
       const s=document.createElement('span');s.textContent=by(n);
-      const l=document.createElement('button');l.className='lk';l.setAttribute('aria-label','Me gusta');
-      l.onclick=e=>{e.stopPropagation();toggle(n)};btns[n]=[l];
+      const l=document.createElement('span');l.className='pill';l.hidden=true;btns[n]=l;
       d.append(m,s,l);if(isVid(n)){const e=document.createElement('em');e.textContent='▶';d.append(e)}
       d.onclick=()=>openLb(n);g.append(d);paint(n)});
     drawRetos();
@@ -251,14 +263,37 @@ function drawRetos(){
     r.append(x,b);box.append(r)});
 }
 
-// ---- Visor
-function openLb(n){
-  cur=n;const c=$('lbc');c.textContent='';const m=document.createElement(isVid(n)?'video':'img');m.src='/media/'+n;
+// ---- Visor (deslizar o usar las flechas para cambiar de foto)
+function mkRx(){const b=$('rxs');K.forEach(k=>{const x=document.createElement('button');x.className='rx';x.dataset.k=k;x.onclick=()=>cur&&toggle(cur,k);b.append(x)})}
+function paintLb(){if(!cur)return;document.querySelectorAll('#rxs .rx').forEach(x=>{
+  const k=x.dataset.k,c=(rx[cur]||{})[k]||0,on=(mine[cur]||[]).includes(k);
+  x.textContent=E[k]+(c?' '+c:'');x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)})}
+function show(n,dir){
+  cur=n;const c=$('lbc');c.textContent='';c.className=dir>0?'inL':dir<0?'inR':'';
+  const m=document.createElement(isVid(n)?'video':'img');m.src='/media/'+n;
   if(isVid(n)){m.controls=true;m.playsInline=true;m.autoplay=true}else m.alt='Foto de '+by(n);c.append(m);
-  $('lbp').textContent='De '+by(n);$('dl').href='/media/'+n+'?dl=1';$('lb').style.display='flex';paint(n)}
+  const i=names.indexOf(n);$('lbp').textContent='De '+by(n)+(i>=0?' · '+(i+1)+' de '+names.length:'');
+  $('dl').href='/media/'+n+'?dl=1';paintLb();
+  [names[i+1],names[i-1]].forEach(p=>{if(p&&!isVid(p))new Image().src='/media/'+p});
+}
+const openLb=n=>{$('lb').style.display='flex';show(n,0)};
+function step(d){const n=names[names.indexOf(cur)+d];if(n)show(n,d)}
 const close=()=>{$('lb').style.display='none';$('lbc').textContent='';cur=''};
 $('x').onclick=close;$('lb').onclick=e=>{if(e.target.id==='lb')close()};
-$('lbl').onclick=()=>cur&&toggle(cur);
+$('pv').onclick=()=>step(-1);$('nx').onclick=()=>step(1);
+let sx=0,sy=0,sOk=false;
+$('lb').addEventListener('touchstart',e=>{
+  const t=e.touches[0],el=e.target;sx=t.clientX;sy=t.clientY;sOk=!el.closest('button,a');
+  if(el.tagName==='VIDEO'){const r=el.getBoundingClientRect();sOk=t.clientY<r.top+r.height*.65} // no estorbar los controles del vídeo
+},{passive:true});
+$('lb').addEventListener('touchend',e=>{
+  if(!sOk)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3)step(dx<0?1:-1);
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  if($('lb').style.display!=='flex')return;
+  if(e.key==='ArrowLeft')step(-1);else if(e.key==='ArrowRight')step(1);else if(e.key==='Escape')close();
+});
 
 // ---- Libro de visitas
 async function loadMsgs(){try{
@@ -280,7 +315,7 @@ $('send').onclick=async()=>{
   $('send').disabled=false;
 };
 
-load();loadLikes();setInterval(()=>{load();loadLikes();if(!$('p-libro').hidden)loadMsgs()},15000);
+mkRx();load();loadReacts();setInterval(()=>{load();loadReacts();if(!$('p-libro').hidden)loadMsgs()},15000);
 </script>
 </body>
 </html>
