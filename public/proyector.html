@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyector · Mis XV Años · Nancy Ruiz</title>
+<style>
+:root{--gold:#c9a24a;--goldd:#a67c1e;--parch:#f6ebcc;--wine:#7a1f3d;--t:9.5s}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#1a0f08;color:var(--parch);
+font-family:"Palatino Linotype","Book Antiqua",Georgia,"Noto Serif",serif}
+body.idle{cursor:none}
+body{background:radial-gradient(120% 90% at 50% 40%,#3a2314,#1a0f08 75%)}
+.frame{position:fixed;inset:1.2vmin;border:2px solid var(--gold);border-radius:6px;pointer-events:none;z-index:8;
+box-shadow:inset 0 0 0 .8vmin #1a0f08,inset 0 0 0 calc(.8vmin + 1px) rgba(201,162,74,.55)}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.3s ease}
+.slide.on{opacity:1}
+.bg{position:absolute;inset:-8%;background-size:cover;background-position:center;filter:blur(38px) brightness(.5) saturate(1.2)}
+.pic{position:absolute;inset:12vh 7vw 13vh;display:grid;place-items:center}
+.slide.on .pic{animation:kb var(--t) ease-out forwards}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.045)}}
+.fg{max-width:100%;max-height:100%;object-fit:contain;border:1.1vmin solid #fffdf5;border-radius:.5vmin;box-shadow:0 2vmin 5vmin rgba(0,0,0,.6)}
+.cap{position:absolute;left:50%;bottom:3.6vh;transform:translateX(-50%);display:flex;gap:2vw;align-items:center;white-space:nowrap;
+padding:.9vh 2.2vw;border-radius:99px;background:rgba(26,15,8,.78);border:1px solid var(--gold);font-size:clamp(18px,2.5vw,46px)}
+.rxs:empty{display:none}
+.msgbox{display:none;position:absolute;inset:15vh 10vw 14vh;place-items:center}
+.slide.m .msgbox{display:grid}
+.slide.m .pic,.slide.m .cap{display:none}
+.card{max-width:72vw;padding:6vh 5vw;text-align:center;color:#3f2616;background:linear-gradient(#fbf3da,#efe0b4);
+border:.6vmin double var(--goldd);border-radius:1.2vmin;box-shadow:0 2vmin 5vmin rgba(0,0,0,.55)}
+.card .tag{margin:0 0 2vh;color:var(--goldd);letter-spacing:.2em;text-transform:uppercase;font-size:clamp(14px,1.6vw,28px)}
+.mt{margin:0;font-size:clamp(28px,4.2vw,78px);line-height:1.25;overflow-wrap:anywhere}
+.mt.long{font-size:clamp(22px,3vw,56px)}
+.ma{margin:3vh 0 0;font-weight:700;color:var(--wine);font-size:clamp(20px,2.4vw,44px)}
+.top{position:fixed;left:3.4vw;top:3.2vh;z-index:7;line-height:1}
+.top .xv{margin:0;font-size:clamp(16px,2vw,36px);color:var(--parch);letter-spacing:.08em}
+.top h1{margin:.4vh 0 0;font-size:clamp(30px,5vw,92px);font-weight:700;color:var(--gold);text-shadow:0 .3vmin 1vmin rgba(0,0,0,.6)}
+.count{position:fixed;right:3.4vw;top:3.6vh;z-index:7;font-size:clamp(16px,2vw,36px);color:var(--parch)}
+.qr{position:fixed;right:3.4vw;bottom:3.4vh;z-index:7;width:15vmin;text-align:center;font-size:clamp(11px,1.5vmin,26px);line-height:1.2}
+.qrbox{background:#fff;padding:1vmin;border-radius:1.2vmin;border:.4vmin solid var(--gold);margin-bottom:.8vmin}
+.qrbox svg{display:block;width:100%;height:auto}
+#empty{position:fixed;inset:0;z-index:5;display:grid;place-content:center;text-align:center;padding:0 10vw;font-size:clamp(26px,4vw,72px);color:var(--parch)}
+#empty small{display:block;margin-top:2vh;font-size:.5em;color:var(--gold)}
+#fs{position:fixed;right:3.4vw;top:11vh;z-index:9;padding:1vh 1.6vw;border-radius:99px;border:1px solid var(--gold);background:rgba(26,15,8,.8);color:var(--parch);font:inherit;font-size:clamp(14px,1.6vw,26px);cursor:pointer;transition:opacity .4s}
+body.idle #fs,body.full #fs{opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.slide.on .pic{animation:none}}
+</style>
+</head>
+<body>
+<div class="frame"></div>
+
+<div class="slide" id="s0"><div class="bg"></div><div class="pic"><img class="fg" alt=""></div>
+<div class="cap"><span class="who"></span><span class="rxs"></span></div>
+<div class="msgbox"><div class="card"><p class="tag">Mensaje para Nancy</p><p class="mt"></p><p class="ma"></p></div></div></div>
+<div class="slide" id="s1"><div class="bg"></div><div class="pic"><img class="fg" alt=""></div>
+<div class="cap"><span class="who"></span><span class="rxs"></span></div>
+<div class="msgbox"><div class="card"><p class="tag">Mensaje para Nancy</p><p class="mt"></p><p class="ma"></p></div></div></div>
+
+<div class="top"><p class="xv">Mis XV Años</p><h1>Nancy Ruiz</h1></div>
+<div class="count" id="count"></div>
+<button id="fs" type="button">⛶ Pantalla completa</button>
+<div class="qr"><div class="qrbox"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges" role="img" aria-label="Código QR para subir fotos"><path d="M2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM15 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM23 2h1v1h-1zM25 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM31 2h1v1h-1zM32 2h1v1h-1zM33 2h1v1h-1zM34 2h1v1h-1zM2 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM18 3h1v1h-1zM23 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM34 3h1v1h-1zM2 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM18 4h1v1h-1zM22 4h1v1h-1zM28 4h1v1h-1zM30 4h1v1h-1zM31 4h1v1h-1zM32 4h1v1h-1zM34 4h1v1h-1zM2 5h1v1h-1zM4 5h1v1h-1zM5 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM14 5h1v1h-1zM16 5h1v1h-1zM17 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM20 5h1v1h-1zM21 5h1v1h-1zM22 5h1v1h-1zM25 5h1v1h-1zM26 5h1v1h-1zM28 5h1v1h-1zM30 5h1v1h-1zM31 5h1v1h-1zM32 5h1v1h-1zM34 5h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM11 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM19 6h1v1h-1zM20 6h1v1h-1zM21 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM28 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM34 6h1v1h-1zM2 7h1v1h-1zM8 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM16 7h1v1h-1zM19 7h1v1h-1zM21 7h1v1h-1zM22 7h1v1h-1zM26 7h1v1h-1zM28 7h1v1h-1zM34 7h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM22 8h1v1h-1zM24 8h1v1h-1zM26 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM31 8h1v1h-1zM32 8h1v1h-1zM33 8h1v1h-1zM34 8h1v1h-1zM10 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM16 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM22 9h1v1h-1zM26 9h1v1h-1zM2 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM12 10h1v1h-1zM13 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM19 10h1v1h-1zM21 10h1v1h-1zM23 10h1v1h-1zM25 10h1v1h-1zM28 10h1v1h-1zM31 10h1v1h-1zM33 10h1v1h-1zM34 10h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM6 11h1v1h-1zM9 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM13 11h1v1h-1zM18 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM25 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM31 11h1v1h-1zM32 11h1v1h-1zM34 11h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM13 12h1v1h-1zM16 12h1v1h-1zM19 12h1v1h-1zM22 12h1v1h-1zM24 12h1v1h-1zM25 12h1v1h-1zM27 12h1v1h-1zM29 12h1v1h-1zM30 12h1v1h-1zM31 12h1v1h-1zM33 12h1v1h-1zM34 12h1v1h-1zM10 13h1v1h-1zM13 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM21 13h1v1h-1zM22 13h1v1h-1zM25 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM28 13h1v1h-1zM29 13h1v1h-1zM31 13h1v1h-1zM33 13h1v1h-1zM34 13h1v1h-1zM5 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM23 14h1v1h-1zM24 14h1v1h-1zM27 14h1v1h-1zM29 14h1v1h-1zM30 14h1v1h-1zM31 14h1v1h-1zM2 15h1v1h-1zM4 15h1v1h-1zM5 15h1v1h-1zM6 15h1v1h-1zM9 15h1v1h-1zM15 15h1v1h-1zM18 15h1v1h-1zM20 15h1v1h-1zM21 15h1v1h-1zM23 15h1v1h-1zM33 15h1v1h-1zM4 16h1v1h-1zM5 16h1v1h-1zM7 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM11 16h1v1h-1zM14 16h1v1h-1zM15 16h1v1h-1zM17 16h1v1h-1zM18 16h1v1h-1zM20 16h1v1h-1zM21 16h1v1h-1zM23 16h1v1h-1zM26 16h1v1h-1zM28 16h1v1h-1zM31 16h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM9 17h1v1h-1zM12 17h1v1h-1zM15 17h1v1h-1zM16 17h1v1h-1zM18 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM24 17h1v1h-1zM25 17h1v1h-1zM27 17h1v1h-1zM28 17h1v1h-1zM29 17h1v1h-1zM31 17h1v1h-1zM32 17h1v1h-1zM2 18h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM15 18h1v1h-1zM16 18h1v1h-1zM17 18h1v1h-1zM18 18h1v1h-1zM20 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM28 18h1v1h-1zM30 18h1v1h-1zM31 18h1v1h-1zM32 18h1v1h-1zM5 19h1v1h-1zM6 19h1v1h-1zM9 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM17 19h1v1h-1zM22 19h1v1h-1zM25 19h1v1h-1zM26 19h1v1h-1zM28 19h1v1h-1zM30 19h1v1h-1zM31 19h1v1h-1zM34 19h1v1h-1zM5 20h1v1h-1zM7 20h1v1h-1zM8 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM22 20h1v1h-1zM24 20h1v1h-1zM26 20h1v1h-1zM29 20h1v1h-1zM30 20h1v1h-1zM32 20h1v1h-1zM33 20h1v1h-1zM3 21h1v1h-1zM5 21h1v1h-1zM6 21h1v1h-1zM7 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM14 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM19 21h1v1h-1zM21 21h1v1h-1zM27 21h1v1h-1zM30 21h1v1h-1zM2 22h1v1h-1zM7 22h1v1h-1zM8 22h1v1h-1zM10 22h1v1h-1zM11 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM19 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM29 22h1v1h-1zM31 22h1v1h-1zM32 22h1v1h-1zM34 22h1v1h-1zM2 23h1v1h-1zM3 23h1v1h-1zM4 23h1v1h-1zM5 23h1v1h-1zM10 23h1v1h-1zM13 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM17 23h1v1h-1zM21 23h1v1h-1zM22 23h1v1h-1zM23 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM28 23h1v1h-1zM31 23h1v1h-1zM34 23h1v1h-1zM6 24h1v1h-1zM7 24h1v1h-1zM8 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM13 24h1v1h-1zM15 24h1v1h-1zM16 24h1v1h-1zM18 24h1v1h-1zM20 24h1v1h-1zM23 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM28 24h1v1h-1zM29 24h1v1h-1zM31 24h1v1h-1zM32 24h1v1h-1zM33 24h1v1h-1zM34 24h1v1h-1zM3 25h1v1h-1zM5 25h1v1h-1zM7 25h1v1h-1zM13 25h1v1h-1zM18 25h1v1h-1zM24 25h1v1h-1zM26 25h1v1h-1zM28 25h1v1h-1zM29 25h1v1h-1zM30 25h1v1h-1zM31 25h1v1h-1zM33 25h1v1h-1zM2 26h1v1h-1zM4 26h1v1h-1zM8 26h1v1h-1zM10 26h1v1h-1zM13 26h1v1h-1zM14 26h1v1h-1zM17 26h1v1h-1zM18 26h1v1h-1zM19 26h1v1h-1zM25 26h1v1h-1zM26 26h1v1h-1zM27 26h1v1h-1zM28 26h1v1h-1zM29 26h1v1h-1zM30 26h1v1h-1zM34 26h1v1h-1zM10 27h1v1h-1zM11 27h1v1h-1zM15 27h1v1h-1zM16 27h1v1h-1zM17 27h1v1h-1zM18 27h1v1h-1zM19 27h1v1h-1zM21 27h1v1h-1zM23 27h1v1h-1zM26 27h1v1h-1zM30 27h1v1h-1zM31 27h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM7 28h1v1h-1zM8 28h1v1h-1zM10 28h1v1h-1zM12 28h1v1h-1zM14 28h1v1h-1zM16 28h1v1h-1zM19 28h1v1h-1zM20 28h1v1h-1zM21 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM28 28h1v1h-1zM30 28h1v1h-1zM2 29h1v1h-1zM8 29h1v1h-1zM10 29h1v1h-1zM11 29h1v1h-1zM14 29h1v1h-1zM17 29h1v1h-1zM18 29h1v1h-1zM20 29h1v1h-1zM21 29h1v1h-1zM22 29h1v1h-1zM23 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM26 29h1v1h-1zM30 29h1v1h-1zM31 29h1v1h-1zM32 29h1v1h-1zM33 29h1v1h-1zM34 29h1v1h-1zM2 30h1v1h-1zM4 30h1v1h-1zM5 30h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM12 30h1v1h-1zM19 30h1v1h-1zM23 30h1v1h-1zM24 30h1v1h-1zM25 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM28 30h1v1h-1zM29 30h1v1h-1zM30 30h1v1h-1zM32 30h1v1h-1zM33 30h1v1h-1zM2 31h1v1h-1zM4 31h1v1h-1zM5 31h1v1h-1zM6 31h1v1h-1zM8 31h1v1h-1zM10 31h1v1h-1zM15 31h1v1h-1zM16 31h1v1h-1zM19 31h1v1h-1zM22 31h1v1h-1zM23 31h1v1h-1zM24 31h1v1h-1zM25 31h1v1h-1zM29 31h1v1h-1zM31 31h1v1h-1zM34 31h1v1h-1zM2 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM10 32h1v1h-1zM11 32h1v1h-1zM12 32h1v1h-1zM13 32h1v1h-1zM16 32h1v1h-1zM20 32h1v1h-1zM22 32h1v1h-1zM23 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM26 32h1v1h-1zM28 32h1v1h-1zM29 32h1v1h-1zM32 32h1v1h-1zM2 33h1v1h-1zM8 33h1v1h-1zM15 33h1v1h-1zM17 33h1v1h-1zM18 33h1v1h-1zM19 33h1v1h-1zM20 33h1v1h-1zM24 33h1v1h-1zM25 33h1v1h-1zM26 33h1v1h-1zM27 33h1v1h-1zM29 33h1v1h-1zM30 33h1v1h-1zM34 33h1v1h-1zM2 34h1v1h-1zM3 34h1v1h-1zM4 34h1v1h-1zM5 34h1v1h-1zM6 34h1v1h-1zM7 34h1v1h-1zM8 34h1v1h-1zM10 34h1v1h-1zM11 34h1v1h-1zM13 34h1v1h-1zM14 34h1v1h-1zM16 34h1v1h-1zM17 34h1v1h-1zM18 34h1v1h-1zM19 34h1v1h-1zM20 34h1v1h-1zM21 34h1v1h-1zM23 34h1v1h-1zM25 34h1v1h-1zM28 34h1v1h-1zM30 34h1v1h-1zM32 34h1v1h-1z" fill="#000"/></svg></div>Escanea y sube<br>tus fotos</div>
+<div id="empty">Esperando los primeros recuerdos…<small>Escanea el código y sube tu foto</small></div>
+
+<script>
+const $=id=>document.getElementById(id),q=new URLSearchParams(location.search);
+const T=Math.max(3,+q.get('t')||8)*1000;
+document.documentElement.style.setProperty('--t',(T/1000+1.5)+'s');
+const E={heart:'❤️',laugh:'😂',fire:'🔥',clap:'👏'},K=Object.keys(E);
+const isVid=n=>/\.(mp4|mov|webm)$/.test(n),by=n=>n.split('_')[2].replace(/-/g,' ').replace(/\.\w+$/,'');
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const json=async u=>{try{const r=await fetch(u);return r.ok?await r.json():null}catch(e){return null}};
+
+let all=new Set(),seen=new Set(),priority=[],bag=[],msgs=[],mbag=[],rx={},hist=[],count=0,flip=0,paused=false,timer=null,cur=null,first=true;
+
+async function refresh(){
+  const names=await json('/api/list');if(!Array.isArray(names))return;
+  const ph=names.filter(n=>!isVid(n));all=new Set(ph);
+  const fresh=ph.filter(n=>!seen.has(n));ph.forEach(n=>seen.add(n));
+  if(!first)priority=fresh.concat(priority.filter(n=>all.has(n))); // las fotos nuevas pasan primero
+  first=false;
+  $('count').textContent=ph.length?ph.length+(ph.length===1?' recuerdo':' recuerdos'):'';
+  $('empty').hidden=ph.length>0;
+}
+async function refreshRx(){const j=await json('/api/reactions');if(j&&j.counts){rx=j.counts;if(cur)paintCap($('s'+flip),cur)}}
+async function refreshMsgs(){const j=await json('/api/guestbook');if(Array.isArray(j))msgs=j}
+
+function nextPhoto(){
+  while(priority.length){const n=priority.shift();if(all.has(n))return n}
+  if(!bag.length){bag=shuffle([...all].filter(n=>n!==cur));if(!bag.length)bag=[...all]}
+  while(bag.length){const n=bag.pop();if(all.has(n))return n}
+  return null;
+}
+function paintCap(s,n){
+  const o=rx[n]||{};s.querySelector('.rxs').textContent=K.filter(k=>o[k]).map(k=>E[k]+' '+o[k]).join('   ');
+}
+function swap(s,o){s.classList.remove('on');void s.offsetWidth;s.classList.add('on');o.classList.remove('on')}
+
+async function showPhoto(n){
+  const im=new Image();im.src='/media/'+n;
+  await Promise.race([im.decode().catch(()=>{}),new Promise(r=>setTimeout(r,6000))]);
+  flip^=1;const s=$('s'+flip),o=$('s'+(flip^1));
+  s.classList.remove('m');
+  s.querySelector('.bg').style.backgroundImage='url(/media/'+n+')';
+  const f=s.querySelector('.fg');f.src='/media/'+n;f.alt='Foto de '+by(n);
+  s.querySelector('.who').textContent='De '+by(n);paintCap(s,n);
+  swap(s,o);cur=n;hist.push(n);if(hist.length>30)hist.shift();
+}
+function showMsg(){
+  if(!mbag.length)mbag=shuffle(msgs.slice());
+  const m=mbag.pop();if(!m)return false;
+  flip^=1;const s=$('s'+flip),o=$('s'+(flip^1));
+  s.classList.add('m');
+  const t=s.querySelector('.mt');t.textContent=m.text;t.className='mt'+(m.text.length>140?' long':'');
+  s.querySelector('.ma').textContent='— '+m.by;
+  swap(s,o);cur=null;return true;
+}
+async function step(back){
+  clearTimeout(timer);
+  if(back&&hist.length>1){hist.pop();await showPhoto(hist.pop())}
+  else{
+    count++;
+    if(!(msgs.length&&count%6===0&&showMsg())){const n=nextPhoto();if(n)await showPhoto(n)}
+  }
+  if(!paused)timer=setTimeout(()=>step(),T);
+}
+
+// pantalla completa, teclado y pantalla siempre encendida
+const full=()=>{const d=document.documentElement;(d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d)};
+$('fs').onclick=full;
+document.addEventListener('fullscreenchange',()=>document.body.classList.toggle('full',!!document.fullscreenElement));
+document.addEventListener('keydown',e=>{
+  if(e.key==='f'||e.key==='F')full();
+  else if(e.key==='ArrowRight')step();
+  else if(e.key==='ArrowLeft')step(true);
+  else if(e.key===' '){e.preventDefault();paused=!paused;if(!paused)step();else clearTimeout(timer)}
+});
+let idle;const wake=()=>{document.body.classList.remove('idle');clearTimeout(idle);idle=setTimeout(()=>document.body.classList.add('idle'),3000)};
+document.addEventListener('mousemove',wake);wake();
+let wl=null;const lock=async()=>{try{wl=await navigator.wakeLock.request('screen')}catch(e){}};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')lock()});
+document.addEventListener('click',lock,{once:true});lock();
+window.addEventListener('online',()=>{refresh();refreshRx();refreshMsgs()});
+
+(async()=>{
+  await Promise.all([refresh(),refreshRx(),refreshMsgs()]);
+  step();
+  setInterval(refresh,10000);setInterval(refreshRx,15000);setInterval(refreshMsgs,30000);
+})();
+</script>
+</body>
+</html>
